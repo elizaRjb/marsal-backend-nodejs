@@ -139,3 +139,30 @@ export function getTaskDetailsDataValidator(req, res, next) {
     });
   });
 }
+
+/**
+ * Validate get tasks data.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export function addCommentDataValidator(req, res, next) {
+  const schema = Joi.object({
+    commenterName: Joi.string().required(),
+    commentedDate: Joi.date().required(),
+    comment: Joi.string().required(),
+    projectId: Joi.string().required(),
+    taskId: Joi.string().required()
+  });
+
+  const data = { ...req.body.data, ...req.params };
+
+  return validate(data, schema).then(() => {
+    next();
+  }).catch(error => {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      error: error.details[0].message
+    });
+  });
+}

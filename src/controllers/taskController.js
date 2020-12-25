@@ -24,7 +24,7 @@ export function createTask(req, res) {
 
   // Check if parent id exists
   if (parentTaskId) {
-    findTaskById(data.parentTaskId, result => {
+    findTaskById(parentTaskId, result => {
       if (!result) {
         return res.status(StatusCodes.BAD_REQUEST).send({
           error: 'The parent task does not exist.'
@@ -187,7 +187,7 @@ export function updateTask(req, res) {
 }
 
 /**
- * Update a task in a project.
+ * Get details of a task of a project.
  *
  * @param {Object} req
  * @param {Object} res
@@ -210,4 +210,29 @@ export function getTaskDetails(req, res) {
       error: ReasonPhrases.INTERNAL_SERVER_ERROR
     });
   });
+}
+
+/**
+ * Add a comment in a task of a project.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+export function addComment(req, res) {
+  const { taskId } = req.params;
+
+  const { data } = req.body;
+
+  updateTaskById(taskId, { $push: { comments: data } }, result => {
+    console.log(`Comment added to task ${taskId}`);
+
+    res.status(StatusCodes.OK).send({
+      message: 'Comment added sucessfully.',
+      data: result.comments
+    })
+  }, () => {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  })
 }

@@ -9,6 +9,7 @@ import {
   createTask,
   deleteTask,
   updateTask,
+  addComment,
   getTaskDetails
 } from '../controllers/taskController';
 
@@ -17,6 +18,7 @@ import {
   createTaskDataValidator,
   deleteTaskDataValidator,
   updateTaskDataValidator,
+  addCommentDataValidator,
   getTaskDetailsDataValidator
 } from '../validators/taskValidators';
 
@@ -51,5 +53,11 @@ router.put('/:projectId/tasks/:taskId', updateTaskDataValidator, auth, verifyUse
  * GET api/v1/projects/:projectId/tasks/:taskId.
  */
 router.get('/:projectId/tasks/:taskId', getTaskDetailsDataValidator, auth, verifyUserIsProjectMember, getTaskDetails);
+
+/**
+ * Add a comment to the task of a project.
+ * PUT api/v1/projects/:projectId/tasks/:taskId/comments.
+ */
+router.put('/:projectId/tasks/:taskId/comments', addCommentDataValidator, auth, verifyUserIsProjectMember, addComment);
 
 export default router;

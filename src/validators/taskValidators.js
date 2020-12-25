@@ -117,3 +117,25 @@ export function updateTaskDataValidator(req, res, next) {
     });
   });
 }
+
+/**
+ * Validate get tasks data.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export function getTaskDetailsDataValidator(req, res, next) {
+  const schema = Joi.object({
+    projectId: Joi.string().required(),
+    taskId: Joi.string().required()
+  });
+
+  return validate(req.params, schema).then(() => {
+    next();
+  }).catch(error => {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      error: error.details[0].message
+    });
+  });
+}

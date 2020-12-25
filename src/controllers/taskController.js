@@ -2,12 +2,12 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 import {
   saveTask,
-  findTasksOfProject,
   findTaskById,
+  updateTaskById,
+  findTasksOfProject,
+  deleteManyTasksWithIds,
   updateChildrenTasksListOfTaskById,
   removeFromChildrenTasksListOfTaskById,
-  deleteManyTasksWithIds,
-  updateTaskById
 } from '../services/taskService';
 
 /**
@@ -184,4 +184,30 @@ export function updateTask(req, res) {
   }
 
   updateTaskById(taskId, data, callbackSuccess, callbackError);
+}
+
+/**
+ * Update a task in a project.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+export function getTaskDetails(req, res) {
+  const { taskId } = req.params;
+
+  findTaskById(taskId, result => {
+    if (!result) {
+      return res.status(StatusCodes.BAD_REQUEST).send({
+        error: 'The task does not exist.'
+      });
+    }
+
+    return res.status(StatusCodes.OK).send({
+      data: result
+    })
+  }, () => {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  });
 }

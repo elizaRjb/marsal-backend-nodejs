@@ -4,22 +4,52 @@ import { auth } from '../services/authService';
 
 import { verifyUserIsProjectMember } from '../services/projectService';
 
-import { createTask, getTasks, deleteTask, updateTask } from '../controllers/taskController';
+import {
+  getTasks,
+  createTask,
+  deleteTask,
+  updateTask,
+  getTaskDetails
+} from '../controllers/taskController';
 
-import { createTaskDataValidator, getTasksDataValidator, deleteTaskDataValidator, updateTaskDataValidator } from '../validators/taskValidators';
+import {
+  getTasksDataValidator,
+  createTaskDataValidator,
+  deleteTaskDataValidator,
+  updateTaskDataValidator,
+  getTaskDetailsDataValidator
+} from '../validators/taskValidators';
 
 const router = express.Router();
 
-// Create task
+/**
+ * Create a task.
+ * POST api/v1/projects/:projectId/tasks.
+ */
 router.post('/:projectId/tasks', createTaskDataValidator, auth, verifyUserIsProjectMember, createTask);
 
-// Get tasks of a project
+/**
+ * Get tasks of a project.
+ * GET api/v1/projects/:projectId/tasks.
+ */
 router.get('/:projectId/tasks', getTasksDataValidator, auth, verifyUserIsProjectMember, getTasks);
 
-// Delete a task from a project
+/**
+ * Delete a task from a project.
+ * DELETE api/v1/projects/:projectId/tasks.
+ */
 router.delete('/:projectId/tasks', deleteTaskDataValidator, auth, verifyUserIsProjectMember, deleteTask);
 
-// Update a task of a project
+/**
+ * Update a task of a project.
+ * PUT api/v1/projects/:projectId/tasks/:taskId.
+ */
 router.put('/:projectId/tasks/:taskId', updateTaskDataValidator, auth, verifyUserIsProjectMember, updateTask);
+
+/**
+ * Get details of a task of a project.
+ * GET api/v1/projects/:projectId/tasks/:taskId.
+ */
+router.get('/:projectId/tasks/:taskId', getTaskDetailsDataValidator, auth, verifyUserIsProjectMember, getTaskDetails);
 
 export default router;

@@ -18,31 +18,34 @@ export function create(req, res) {
 
   if (users.length) {
     return res.status(StatusCodes.FORBIDDEN).send({
-      error: 'User already exists'
+      error: 'User already exists.'
     });
   }
 
   const callbackError = () => {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
   };
 
   const saveUserCallbackSuccess = result => {
-    const firstName = result.firstName;
-    const lastName = result.lastName;
-    const userId = result._id;
+    const { firstName, lastName, _id, email } = result;
 
-    const accessToken = generateAuthToken({ userId }, '24h');
+    const data = {
+      name: `${firstName} ${lastName}`,
+      userId: _id
+    }
 
-    console.log('INFO: New user created, id: ', userId);
+    const accessToken = generateAuthToken(data, '24h');
 
-    return res.header('x-auth-token', accessToken).status(StatusCodes.CREATED).send({
-      data: [
-        {
-          firstName,
-          lastName,
-          userId
-        }
-      ]
+    console.log('INFO: New user created, id: ', _id);
+
+    return res.status(StatusCodes.CREATED).send({
+      message: 'User created successfully.',
+      data: {
+        data: { ...data, email },
+        token: { accessToken }
+      }
     });
   };
 
@@ -72,30 +75,35 @@ export function login(req, res) {
 
   if (!users.length) {
     return res.status(StatusCodes.NOT_FOUND).send({
-      error: 'User does not exist'
+      error: 'User does not exist.'
     });
   }
 
   const callbackError = () => {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
   };
 
   const comparePasswordCallbackSuccess = isValid => {
     if (isValid) { // Passwords match
-      const { firstName, lastName, _id } = users[0];
-      const accessToken = generateAuthToken({ userId: _id }, '24h');
+      const { firstName, lastName, _id, email } = users[0];
+
+      const data = {
+        name: `${firstName} ${lastName}`,
+        userId: _id
+      }
+
+      const accessToken = generateAuthToken({ data }, '24h');
 
       console.log('INFO: User logged in, id: ', _id);
 
       return res.header('x-auth-token', accessToken).status(StatusCodes.OK).send({
-        message: 'Login successful',
-        data: [
-          {
-            firstName: firstName,
-            lastName: lastName,
-            userId: _id
-          }
-        ]
+        message: 'Login successful.',
+        data: {
+          data: { ...data, email },
+          token: { accessToken }
+        }
       });
     }
 

@@ -4,9 +4,9 @@ import { auth } from '../services/authService';
 
 import { verifyUserIsProjectMember } from '../services/projectService';
 
-import { createTask, getTasks, deleteTask } from '../controllers/taskController';
+import { createTask, getTasks, deleteTask, updateTask } from '../controllers/taskController';
 
-import { createTaskDataValidator, getTasksDataValidator, deleteTaskDataValidator } from '../validators/taskValidators';
+import { createTaskDataValidator, getTasksDataValidator, deleteTaskDataValidator, updateTaskDataValidator } from '../validators/taskValidators';
 
 const router = express.Router();
 
@@ -18,5 +18,8 @@ router.get('/:projectId/tasks', getTasksDataValidator, auth, verifyUserIsProject
 
 // Delete a task from a project
 router.delete('/:projectId/tasks', deleteTaskDataValidator, auth, verifyUserIsProjectMember, deleteTask);
+
+// Update a task of a project
+router.put('/:projectId/tasks/:taskId', updateTaskDataValidator, auth, verifyUserIsProjectMember, updateTask);
 
 export default router;

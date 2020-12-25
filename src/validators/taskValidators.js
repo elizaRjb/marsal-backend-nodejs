@@ -81,3 +81,39 @@ export function deleteTaskDataValidator(req, res, next) {
     });
   });
 }
+
+/**
+ * Validate update task data.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export function updateTaskDataValidator(req, res, next) {
+  const assignedToSchema = {
+    name: Joi.string().required(),
+    email: Joi.string().required().email(),
+    userId: Joi.string().required()
+  };
+
+  const schema = Joi.object({
+    name: Joi.string(),
+    assignedTo: Joi.object(assignedToSchema).allow({}),
+    dueDate: Joi.alternatives([Joi.date(), Joi.string().valid('')]),
+    stage: Joi.string(),
+    priority: Joi.string(),
+    description: Joi.string().allow(''),
+    taskId: Joi.string().required(),
+    projectId: Joi.string().required()
+  });
+
+  const data = { ...req.body.data, ...req.params };
+
+  return validate(data, schema).then(() => {
+    next();
+  }).catch(error => {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      error: error.details[0].message
+    });
+  });
+}

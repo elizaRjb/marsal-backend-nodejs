@@ -1,6 +1,14 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
-import { saveTask, findTasksOfProject, findTaskById, updateChildrenTasksListOfTaskById, removeFromChildrenTasksListOfTaskById, deleteManyTasksWithIds } from '../services/taskService';
+import {
+  saveTask,
+  findTasksOfProject,
+  findTaskById,
+  updateChildrenTasksListOfTaskById,
+  removeFromChildrenTasksListOfTaskById,
+  deleteManyTasksWithIds,
+  updateTaskById
+} from '../services/taskService';
 
 /**
  * Create a task in a project.
@@ -141,10 +149,39 @@ export function deleteTask(req, res) {
       removeFromChildrenTasksListOfTaskById(parentTaskId, taskId, () => {
         deleteTasks(result);
       }, callbackError);
-        
+
       return;
     }
 
     deleteTasks(result);
   }, callbackError);
+}
+
+/**
+ * Update a task in a project.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+export function updateTask(req, res) {
+  const { taskId } = req.params;
+
+  const { data } = req.body;
+
+  const callbackError = () => {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  };
+
+  const callbackSuccess = (result) => {
+    console.log('Task updated, id: ', result._id);
+
+    return res.status(StatusCodes.OK).send({
+      message: 'Task updated successfully.',
+      data: result
+    })
+  }
+
+  updateTaskById(taskId, data, callbackSuccess, callbackError);
 }

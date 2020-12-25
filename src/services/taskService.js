@@ -105,3 +105,21 @@ export function deleteManyTasksWithIds(idsList, callbackSuccess, callbackError) 
     callbackError();
   });
 }
+
+/**
+ * Update a task by id.
+ *
+ * @param {String} taskId
+ * @param {Object} updateData
+ * @param {Function} callbackSuccess
+ * @param {Function} callbackError
+ */
+export function updateTaskById(taskId, updateData, callbackSuccess, callbackError) {
+  Task.findByIdAndUpdate(taskId, updateData, { new: true }).then(results => {
+    callbackSuccess(results);
+  }).catch(error => {
+    console.log('ERROR: ', error);
+
+    callbackError();
+  });
+}

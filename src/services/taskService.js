@@ -61,7 +61,6 @@ export function findTasksOfProject(projectId, callbackSuccess, callbackError) {
  * @param {Function} callbackError
  */
 export function updateChildrenTasksListOfTaskById(taskId, childrenTasksData, callbackSuccess, callbackError) {
-  console.log(childrenTasksData);
   Task.findByIdAndUpdate(taskId, { $push: { childrenTasks: { ...childrenTasksData } } }, { new: true }).then(results => {
     callbackSuccess(results);
   }).catch(error => {

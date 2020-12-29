@@ -8,13 +8,13 @@ import isEmpty from 'lodash/isEmpty';
 * @returns {Promise}
 */
 function validate(data, schema) {
- const { error, value } = schema.validate(data, { abortEarly: false });
+  const { error, value } = schema.validate(data, { abortEarly: false });
 
- if (!isEmpty(error)) {
-   return Promise.reject(error);
- }
+  if (!isEmpty(error)) {
+    return Promise.reject(error);
+  }
 
- return Promise.resolve(value);
+  return Promise.resolve(value);
 }
 
 export default validate;

@@ -10,6 +10,7 @@ import {
   deleteTask,
   updateTask,
   addComment,
+  deleteComment,
   getTaskDetails
 } from '../controllers/taskController';
 
@@ -19,7 +20,8 @@ import {
   deleteTaskDataValidator,
   updateTaskDataValidator,
   addCommentDataValidator,
-  getTaskDetailsDataValidator
+  getTaskDetailsDataValidator,
+  deleteCommentDataValidator
 } from '../validators/taskValidators';
 
 const router = express.Router();
@@ -59,5 +61,11 @@ router.get('/:projectId/tasks/:taskId', getTaskDetailsDataValidator, auth, verif
  * POST api/v1/projects/:projectId/tasks/:taskId/comments.
  */
 router.post('/:projectId/tasks/:taskId/comments', addCommentDataValidator, auth, verifyUserIsProjectMember, addComment);
+
+/**
+ * Add a comment to the task of a project.
+ * DELETE api/v1/projects/:projectId/tasks/:taskId/comments.
+ */
+router.delete('/:projectId/tasks/:taskId/comments', deleteCommentDataValidator, auth, verifyUserIsProjectMember, deleteComment);
 
 export default router;

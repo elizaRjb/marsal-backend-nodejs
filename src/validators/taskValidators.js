@@ -164,3 +164,29 @@ export function addCommentDataValidator(req, res, next) {
     });
   });
 }
+
+/**
+ * Validate delete comment data.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export function deleteCommentDataValidator(req, res, next) {
+  const schema = Joi.object({
+    commentId: Joi.string().required(),
+    commenterId: Joi.string().required(),
+    projectId: Joi.string().required(),
+    taskId: Joi.string().required()
+  });
+
+  const data = { ...req.body.data, ...req.params };
+
+  return validate(data, schema).then(() => {
+    next();
+  }).catch(error => {
+    return res.status(StatusCodes.BAD_REQUEST).send({
+      error: error.details[0].message
+    });
+  });
+}

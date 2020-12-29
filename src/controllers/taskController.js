@@ -236,8 +236,39 @@ export function addComment(req, res) {
   updateTaskById(taskId, { $push: { comments: commentData } }, result => {
     console.log(`INFO: Comment added to task ${taskId}`);
 
-    res.status(StatusCodes.OK).send({
+    return res.status(StatusCodes.OK).send({
       message: 'Comment added sucessfully.',
+      data: result.comments
+    })
+  }, () => {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  })
+}
+
+/**
+ * Add a comment in a task of a project.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+export function deleteComment(req, res) {
+  const { taskId } = req.params;
+  const { userId } = req.currentUser;
+  const { commentId, commenterId } = req.body.data;
+
+  if (commenterId !== userId) {
+    return res.status(StatusCodes.FORBIDDEN).send({
+      error: 'The user cannot delete this comment.'
+    });
+  }
+
+  updateTaskById(taskId, { $pull: { comments: { _id: commentId} } }, result => {
+    console.log(`INFO: Comment removed from task ${taskId}`);
+
+    return res.status(StatusCodes.OK).send({
+      message: 'Comment removed sucessfully.',
       data: result.comments
     })
   }, () => {

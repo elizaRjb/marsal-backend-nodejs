@@ -9,6 +9,7 @@ const ChildTaskSchema = new Schema({
 
 const CommentSchema = new Schema({
   commenterName: String,
+  commenterId: String,
   commentedDate: Date,
   comment: String,
   isEdited: { type: Boolean, default: false }

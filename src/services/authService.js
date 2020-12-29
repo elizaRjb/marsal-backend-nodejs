@@ -17,7 +17,7 @@ export function auth(req, res, next) {
 
   if (!token) {
     return res.status(StatusCodes.UNAUTHORIZED).send({
-      message: ReasonPhrases.UNAUTHORIZED
+      error: ReasonPhrases.UNAUTHORIZED
     });
   }
 
@@ -30,7 +30,7 @@ export function auth(req, res, next) {
     console.log('ERROR: ', error);
 
     return res.status(StatusCodes.FORBIDDEN).send({
-      message: ReasonPhrases.FORBIDDEN
+      error: ReasonPhrases.FORBIDDEN
     });
   }
 }

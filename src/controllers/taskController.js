@@ -220,11 +220,21 @@ export function getTaskDetails(req, res) {
  */
 export function addComment(req, res) {
   const { taskId } = req.params;
+  const { userId, name } = req.currentUser;
 
-  const { data } = req.body;
+  const { comment } = req.body.data;
 
-  updateTaskById(taskId, { $push: { comments: data } }, result => {
-    console.log(`Comment added to task ${taskId}`);
+  const commentedDate = new Date();
+
+  const commentData = {
+    commenterName: name,
+    commenterId: userId,
+    commentedDate,
+    comment
+  }
+
+  updateTaskById(taskId, { $push: { comments: commentData } }, result => {
+    console.log(`INFO: Comment added to task ${taskId}`);
 
     res.status(StatusCodes.OK).send({
       message: 'Comment added sucessfully.',

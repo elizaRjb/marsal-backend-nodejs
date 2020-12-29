@@ -141,7 +141,7 @@ export function getTaskDetailsDataValidator(req, res, next) {
 }
 
 /**
- * Validate get tasks data.
+ * Validate add comment data.
  *
  * @param {Object} req
  * @param {Object} res
@@ -149,8 +149,6 @@ export function getTaskDetailsDataValidator(req, res, next) {
  */
 export function addCommentDataValidator(req, res, next) {
   const schema = Joi.object({
-    commenterName: Joi.string().required(),
-    commentedDate: Joi.date().required(),
     comment: Joi.string().required(),
     projectId: Joi.string().required(),
     taskId: Joi.string().required()

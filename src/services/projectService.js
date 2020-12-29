@@ -71,7 +71,8 @@ export function verifyUserIsProjectMember(req, res, next) {
     if (results.members && results.members.length !== 0) {
       // Get members with given user id
       user = results.members.filter(item => {
-        return item.userId === userId;
+        // eslint-disable-next-line eqeqeq
+        return item.userId == userId;
       })
     }
 

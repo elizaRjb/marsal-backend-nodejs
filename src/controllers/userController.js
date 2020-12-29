@@ -94,7 +94,7 @@ export function login(req, res) {
         userId: _id
       }
 
-      const accessToken = generateAuthToken({ data }, '24h');
+      const accessToken = generateAuthToken(data, '24h');
 
       console.log('INFO: User logged in, id: ', _id);
 

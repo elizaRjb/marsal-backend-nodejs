@@ -56,8 +56,8 @@ router.get('/:projectId/tasks/:taskId', getTaskDetailsDataValidator, auth, verif
 
 /**
  * Add a comment to the task of a project.
- * PUT api/v1/projects/:projectId/tasks/:taskId/comments.
+ * POST api/v1/projects/:projectId/tasks/:taskId/comments.
  */
-router.put('/:projectId/tasks/:taskId/comments', addCommentDataValidator, auth, verifyUserIsProjectMember, addComment);
+router.post('/:projectId/tasks/:taskId/comments', addCommentDataValidator, auth, verifyUserIsProjectMember, addComment);
 
 export default router;

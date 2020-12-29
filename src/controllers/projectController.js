@@ -40,7 +40,8 @@ export function createProject(req, res) {
     console.log('INFO: Project created, id: ', result._id);
 
     return res.status(StatusCodes.CREATED).send({
-      message: 'Project saved successfully.'
+      message: 'Project saved successfully.',
+      data: result
     });
   };
 

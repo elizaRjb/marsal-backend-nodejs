@@ -63,7 +63,7 @@ router.get('/:projectId/tasks/:taskId', getTaskDetailsDataValidator, auth, verif
 router.post('/:projectId/tasks/:taskId/comments', addCommentDataValidator, auth, verifyUserIsProjectMember, addComment);
 
 /**
- * Add a comment to the task of a project.
+ * Delete a comment of a task of a project.
  * DELETE api/v1/projects/:projectId/tasks/:taskId/comments.
  */
 router.delete('/:projectId/tasks/:taskId/comments', deleteCommentDataValidator, auth, verifyUserIsProjectMember, deleteComment);

@@ -14,16 +14,16 @@ import Project from '../models/project';
 export function findProjectById(req, res, next) {
   const { projectId } = req.params;
 
-  try {
-    Project.find({ _id: projectId }).then(results => {
-      req.projects = results;
-      next();
-    });
-  } catch (error) {
+  Project.find({ _id: projectId }).then(results => {
+    req.projects = results;
+    next();
+  }).catch(error => {
     console.log('ERROR: ', error);
-
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
-  }
+  
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  });
 }
 
 /**
@@ -34,18 +34,18 @@ export function findProjectById(req, res, next) {
  * @param {Function} next
  */
 export function findProjectsByUserId(req, res, next) {
-  const { userId } = req.params;
+  const { userId } = req.currentUser;
 
-  try {
-    Project.find({ 'members.userId': userId }).then(results => {
-      req.projects = results;
-      next();
-    });
-  } catch (error) {
+  Project.find({ 'members.userId': userId }).then(results => {
+    req.projects = results;
+    next();
+  }).catch(error => {
     console.log('ERROR: ', error);
-
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
-  }
+  
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  });
 }
 
 /**

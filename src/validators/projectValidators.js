@@ -4,27 +4,6 @@ import { StatusCodes } from 'http-status-codes';
 import validate from '../utils/validate';
 
 /**
- * Validate get projects data.
- *
- * @param {Object} req
- * @param {Object} res
- * @param {Function} next
- */
-export function getProjectsDataValidator(req, res, next) {
-  const schema = Joi.object({
-    userId: Joi.string().required()
-  });
-
-  return validate(req.params, schema).then(() => {
-    next();
-  }).catch(error => {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      error: error.details[0].message
-    });
-  });
-}
-
-/**
  * Validate create project data.
  *
  * @param {Object} req
@@ -39,7 +18,7 @@ export function createProjectDataValidator(req, res, next) {
     userId: Joi.string()
   });
 
-  const data = { ...req.body, ...req.params };
+  const data = { ...req.body.data, ...req.params };
 
   return validate(data, schema).then(() => {
     next();
@@ -63,7 +42,7 @@ export function addUserInProjectDataValidator(req, res, next) {
     projectId: Joi.string().required()
   });
 
-  const data = { ...req.body, ...req.params };
+  const data = { ...req.body.data, ...req.params };
 
   return validate(data, schema).then(() => {
     next();

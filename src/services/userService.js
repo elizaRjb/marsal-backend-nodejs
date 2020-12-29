@@ -12,18 +12,18 @@ import User from '../models/user';
  * @param {Function} next
  */
 export function findUserByEmail(req, res, next) {
-  const { email } = req.body;
+  const { email } = req.body.data;
 
-  try {
-    User.find({ email }).then(results => {
-      req.users = results;
-      next();
-    });
-  } catch (error) {
+  User.find({ email }).then(results => {
+    req.users = results;
+    next();
+  }).catch(error => {
     console.log('ERROR: ', error);
-
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
-  }
+  
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  });
 }
 
 /**
@@ -34,15 +34,13 @@ export function findUserByEmail(req, res, next) {
  * @param {Function} callbackError
  */
 export function findUser(params, callbackSuccess, callbackError) {
-  try {
-    User.find(params).then(results => {
-      callbackSuccess(results);
-    });
-  } catch (error) {
+  User.find(params).then(results => {
+    callbackSuccess(results);
+  }).catch(error => {
     console.log('ERROR: ', error);
-
+  
     callbackError();
-  }
+  });
 }
 
 /**

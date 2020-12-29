@@ -46,7 +46,7 @@ export function createTask(req, res) {
   }
 
   const callbackSuccess = (result) => {
-    console.log('Task created. id: ', result._id);
+    console.log('INFO: Task created. id: ', result._id);
 
     return res.status(StatusCodes.CREATED).send({
       message: 'Task created successfully',
@@ -204,7 +204,7 @@ export function getTaskDetails(req, res) {
 
     return res.status(StatusCodes.OK).send({
       data: result
-    })
+    });
   }, () => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
       error: ReasonPhrases.INTERNAL_SERVER_ERROR
@@ -231,7 +231,7 @@ export function addComment(req, res) {
     commenterId: userId,
     commentedDate,
     comment
-  }
+  };
 
   updateTaskById(taskId, { $push: { comments: commentData } }, result => {
     console.log(`INFO: Comment added to task ${taskId}`);

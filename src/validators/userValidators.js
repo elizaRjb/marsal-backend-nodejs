@@ -18,7 +18,7 @@ export function signupDataValidator(req, res, next) {
     password: Joi.string().min(6).required()
   });
 
-  return validate(req.body, schema).then(() => {
+  return validate(req.body.data, schema).then(() => {
     next();
   }).catch(error => {
     return res.status(StatusCodes.BAD_REQUEST).send({
@@ -40,7 +40,7 @@ export function loginDataValidator(req, res, next) {
     password: Joi.string().min(6).required()
   });
 
-  return validate(req.body, schema).then(() => {
+  return validate(req.body.data, schema).then(() => {
     next();
   }).catch(error => {
     return res.status(StatusCodes.BAD_REQUEST).send({

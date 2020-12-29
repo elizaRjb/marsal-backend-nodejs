@@ -26,14 +26,14 @@ export function getProjects(req, res) {
  * @param {Object} res
  */
 export function createProject(req, res) {
-  const { userId } = req.params;
+  const { userId } = req.currentUser;
 
-  const { name, tag, description } = req.body;
+  const { name, tag, description } = req.body.data;
 
   const callbackError = () => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
-      message: ReasonPhrases.INTERNAL_SERVER_ERROR
-    })
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
   }
 
   const saveProjectCallbackSuccess = result => {
@@ -41,7 +41,7 @@ export function createProject(req, res) {
 
     return res.status(StatusCodes.CREATED).send({
       message: 'Project saved successfully.'
-    })
+    });
   };
 
   const findUserCallbackSuccess = users => {
@@ -67,10 +67,9 @@ export function createProject(req, res) {
       saveProject(projectData, saveProjectCallbackSuccess, callbackError);
     } else {
       return res.status(StatusCodes.BAD_REQUEST).send({
-        message: 'User with given id does not exist.'
+        error: 'User with given id does not exist.'
       });
     }
-
   }
 
   findUser({ _id: userId }, findUserCallbackSuccess, callbackError);
@@ -87,13 +86,13 @@ export function addUserInProject(req, res) {
 
   if (!users.length) {
     return res.status(StatusCodes.NOT_FOUND).send({
-      message: 'The requested user does not exist.'
+      error: 'The requested user does not exist.'
     });
   }
 
   if (!projects.length) {
     return res.status(StatusCodes.NOT_FOUND).send({
-      message: 'The project does not exist'
+      error: 'The project does not exist.'
     });
   }
 
@@ -104,7 +103,7 @@ export function addUserInProject(req, res) {
 
   if (membersList.length) {
     return res.status(StatusCodes.BAD_REQUEST).send({
-      message: 'The user is already a member of this project.'
+      error: 'The user is already a member of this project.'
     });
   }
 
@@ -116,10 +115,12 @@ export function addUserInProject(req, res) {
   }
 
   const callbackError = () => {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
   };
 
-  saveMemberInProject(memberData, projects[0]._id, result => {
+  saveMemberInProject(memberData, projects[0]._id, () => {
     console.log(`INFO: New member added. Member id: ${memberData.userId}, Project id: ${projects[0]._id}`);
 
     return res.status(StatusCodes.OK).send({

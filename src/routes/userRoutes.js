@@ -2,16 +2,22 @@ import express from 'express';
 
 import { findUserByEmail } from '../services/userService';
 
-import { create, login } from '../controllers/userController';
+import { createUser, login } from '../controllers/userController';
 
 import { signupDataValidator, loginDataValidator } from '../validators/userValidators';
 
 const router = express.Router();
 
-// Sign up
-router.post('/signup', signupDataValidator, findUserByEmail, create);
+/**
+ * Sign up a new user.
+ * POST api/v1/users/signup.
+ */
+router.post('/signup', signupDataValidator, findUserByEmail, createUser);
 
-// Log in
+/**
+ * Log in a user.
+ * POST api/v1/users/login.
+ */
 router.post('/login', loginDataValidator, findUserByEmail, login);
 
 export default router;

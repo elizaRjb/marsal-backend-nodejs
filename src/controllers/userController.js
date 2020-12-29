@@ -11,10 +11,13 @@ import * as UserService from '../services/userService';
  * @param {Object} req
  * @param {Object} res
  */
-export function create(req, res) {
-  const { users, body: {
-    firstName, lastName, email, password
-  } } = req;
+export function createUser(req, res) {
+  const {
+    users,
+    body: {
+      data: { firstName, lastName, email, password }
+    }
+  } = req;
 
   if (users.length) {
     return res.status(StatusCodes.FORBIDDEN).send({
@@ -71,7 +74,7 @@ export function create(req, res) {
  * @param {Object} res
  */
 export function login(req, res) {
-  const { users, body: { password } } = req;
+  const { users, body: { data: { password } } } = req;
 
   if (!users.length) {
     return res.status(StatusCodes.NOT_FOUND).send({

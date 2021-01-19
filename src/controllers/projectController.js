@@ -1,6 +1,7 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
-import { USER_ROLES } from '../utils/constants';
+import { getRandomValueFromList } from '../utils/utils';
+import { USER_ROLES, COLOR_SCHEMES } from '../utils/constants';
 
 import { findUser } from '../services/userService';
 import { saveProject, saveMemberInProject } from '../services/projectService';
@@ -47,19 +48,23 @@ export function createProject(req, res) {
 
   const findUserCallbackSuccess = users => {
     if (users.length) {
-      const { firstName, lastName, email, _id } = users[0];
+      const { firstName, lastName, email, _id, colorScheme } = users[0];
 
       const memberName = `${firstName} ${lastName}`;
+
+      const projectColorScheme = getRandomValueFromList(COLOR_SCHEMES);
 
       const projectData = {
         name,
         tag: tag.toUpperCase(),
         description,
+        colorScheme: projectColorScheme,
         members: [
           {
             name: memberName,
             email,
             userId: _id,
+            colorScheme,
             role: USER_ROLES.admin
           }
         ]
@@ -112,6 +117,7 @@ export function addUserInProject(req, res) {
     name: `${users[0].firstName} ${users[0].lastName}`,
     email: users[0].email,
     userId: users[0]._id,
+    colorScheme: users[0].colorScheme,
     role: USER_ROLES.user
   }
 
@@ -125,6 +131,7 @@ export function addUserInProject(req, res) {
     console.log(`INFO: New member added. Member id: ${memberData.userId}, Project id: ${projects[0]._id}`);
 
     return res.status(StatusCodes.OK).send({
+      data: memberData,
       message: 'New member added successfully.'
     });
   }, callbackError);

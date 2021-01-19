@@ -1,6 +1,8 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 import { generateAuthToken } from '../utils/auth';
+import { COLOR_SCHEMES } from '../utils/constants';
+import { getRandomValueFromList } from '../utils/utils';
 import { hashPassword, comparePassword } from '../utils/password';
 
 import * as UserService from '../services/userService';
@@ -32,7 +34,7 @@ export function createUser(req, res) {
   };
 
   const saveUserCallbackSuccess = result => {
-    const { firstName, lastName, _id, email } = result;
+    const { firstName, lastName, colorScheme, _id, email } = result;
 
     const data = {
       name: `${firstName} ${lastName}`,
@@ -46,7 +48,7 @@ export function createUser(req, res) {
     return res.status(StatusCodes.CREATED).send({
       message: 'User created successfully.',
       data: {
-        data: { ...data, email },
+        userInfo: { ...data, email, colorScheme },
         token: { accessToken }
       }
     });
@@ -57,6 +59,7 @@ export function createUser(req, res) {
       firstName,
       lastName,
       email,
+      colorScheme: getRandomValueFromList(COLOR_SCHEMES),
       password: hashedPassword
     }
 
@@ -90,7 +93,7 @@ export function login(req, res) {
 
   const comparePasswordCallbackSuccess = isValid => {
     if (isValid) { // Passwords match
-      const { firstName, lastName, _id, email } = users[0];
+      const { firstName, lastName, colorScheme, _id, email } = users[0];
 
       const data = {
         name: `${firstName} ${lastName}`,
@@ -104,7 +107,7 @@ export function login(req, res) {
       return res.header('x-auth-token', accessToken).status(StatusCodes.OK).send({
         message: 'Login successful.',
         data: {
-          data: { ...data, email },
+          userInfo: { ...data, email, colorScheme },
           token: { accessToken }
         }
       });

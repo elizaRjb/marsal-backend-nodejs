@@ -126,3 +126,20 @@ export function saveMemberInProject(memberData, projectId, callbackSuccess, call
     callbackError();
   })
 }
+
+/**
+ * Returns project tag of a project.
+ *
+ * @param {String} projectId
+ * @param {Function} callbackSuccess
+ * @param {Function} callbackError
+ */
+export function getProjectTag(projectId, callbackSuccess, callbackError) {
+  Project.findOne({ _id: projectId }).then((project) => {
+    console.log(project.tag);
+    callbackSuccess(project.tag);
+  }).catch(error => {
+    console.log("ERROR: ", error);
+    callbackError();
+  })
+}

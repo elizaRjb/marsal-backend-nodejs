@@ -11,7 +11,8 @@ import {
   updateTask,
   addComment,
   deleteComment,
-  getTaskDetails
+  getTaskDetails,
+  getSubTasks
 } from '../controllers/taskController';
 
 import {
@@ -55,6 +56,12 @@ router.put('/:projectId/tasks/:taskId', updateTaskDataValidator, auth, verifyUse
  * GET api/v1/projects/:projectId/tasks/:taskId.
  */
 router.get('/:projectId/tasks/:taskId', getTaskDetailsDataValidator, auth, verifyUserIsProjectMember, getTaskDetails);
+
+/**
+ * Get subtasks of a task of a project.
+ * GET api/v1/projects/:projectId/tasks/:taskId/subtasks.
+ */
+router.get('/:projectId/tasks/:taskId/subtasks', getTaskDetailsDataValidator, auth, verifyUserIsProjectMember, getSubTasks);
 
 /**
  * Add a comment to the task of a project.

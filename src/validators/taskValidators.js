@@ -32,20 +32,7 @@ export function getTasksDataValidator(req, res, next) {
  * @param {Function} next
  */
 export function createTaskDataValidator(req, res, next) {
-  const assignedToSchema = {
-    name: Joi.string().required(),
-    email: Joi.string().required().email(),
-    userId: Joi.string().required()
-  };
-
   const schema = Joi.object({
-    taskTag: Joi.string().required(),
-    name: Joi.string().required(),
-    assignedTo: Joi.object(assignedToSchema).allow({}),
-    dueDate: Joi.alternatives([Joi.date(), Joi.string().valid('')]),
-    stage: Joi.string().required(),
-    priority: Joi.string().required(),
-    description: Joi.string().allow(''),
     parentTaskId: Joi.string().allow(''),
     projectId: Joi.string().required()
   });
@@ -99,7 +86,7 @@ export function updateTaskDataValidator(req, res, next) {
   const schema = Joi.object({
     name: Joi.string(),
     assignedTo: Joi.object(assignedToSchema).allow({}),
-    dueDate: Joi.alternatives([Joi.date(), Joi.string().valid('')]),
+    dueDate: Joi.alternatives([Joi.date(), Joi.string().valid('', null)]),
     stage: Joi.string(),
     priority: Joi.string(),
     description: Joi.string().allow(''),

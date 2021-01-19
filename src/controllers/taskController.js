@@ -5,10 +5,14 @@ import {
   findTaskById,
   updateTaskById,
   findTasksOfProject,
+  getNextUniqueTaskTag,
   deleteManyTasksWithIds,
+  findTasksOfProjectWithParams,
   updateChildrenTasksListOfTaskById,
   removeFromChildrenTasksListOfTaskById,
 } from '../services/taskService';
+
+import { TASK_STAGES, TASK_PRIORITIES } from '../utils/constants';
 
 /**
  * Create a task in a project.
@@ -37,14 +41,6 @@ export function createTask(req, res) {
     });
   }
 
-  const createdDate = new Date();
-
-  const taskData = {
-    ...data,
-    createdDate,
-    projectId
-  }
-
   const callbackSuccess = (result) => {
     console.log('INFO: Task created. id: ', result._id);
 
@@ -60,27 +56,46 @@ export function createTask(req, res) {
     })
   };
 
-  saveTask(taskData, result => {
-    const childTaskData = {
-      taskId: result._id,
-      taskTag: result.taskTag
+  getNextUniqueTaskTag(projectId, taskTag => {
+    const createdDate = new Date();
+
+    const taskData = {
+      ...data,
+      taskTag,
+      name: '',
+      assignedTo: {},
+      dueDate: '',
+      createdDate,
+      stage: TASK_STAGES.backlog,
+      priority: TASK_PRIORITIES.minor,
+      description: '',
+      projectId,
+      childrenTasks: [],
+      comments: []
     }
 
-    if (parentTaskId) {
-      // If parent task exists
-      // Update children tasks of parent task
-      updateChildrenTasksListOfTaskById(parentTaskId, childTaskData, () => callbackSuccess(result), callbackError);
+    saveTask(taskData, result => {
+      const childTaskData = {
+        taskId: result._id,
+        taskTag: result.taskTag
+      }
 
-      return;
-    }
+      if (parentTaskId) {
+        // If parent task exists
+        // Update children tasks of parent task
+        updateChildrenTasksListOfTaskById(parentTaskId, childTaskData, () => callbackSuccess(result), callbackError);
 
-    callbackSuccess(result);
+        return;
+      }
+      
+      callbackSuccess(result);
 
+    }, callbackError);
   }, callbackError);
 }
 
 /**
- * Create a task in a project.
+ * Get tasks of a project.
  *
  * @param {Object} req
  * @param {Object} res
@@ -213,6 +228,30 @@ export function getTaskDetails(req, res) {
 }
 
 /**
+ * Get subtasks of a project.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ */
+export function getSubTasks(req, res) {
+  const { projectId, taskId } = req.params;
+
+  const callbackError = () => {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      error: ReasonPhrases.INTERNAL_SERVER_ERROR
+    });
+  }
+
+  const callbackSuccess = (results) => {
+    return res.status(StatusCodes.OK).send({
+      data: results
+    });
+  }
+
+  findTasksOfProjectWithParams({ projectId, parentTaskId: taskId }, callbackSuccess, callbackError);
+}
+
+/**
  * Add a comment in a task of a project.
  *
  * @param {Object} req
@@ -264,7 +303,7 @@ export function deleteComment(req, res) {
     });
   }
 
-  updateTaskById(taskId, { $pull: { comments: { _id: commentId} } }, result => {
+  updateTaskById(taskId, { $pull: { comments: { _id: commentId } } }, result => {
     console.log(`INFO: Comment removed from task ${taskId}`);
 
     return res.status(StatusCodes.OK).send({

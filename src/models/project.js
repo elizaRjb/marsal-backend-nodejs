@@ -6,12 +6,14 @@ const MemberSchema = new Schema({
   name: String,
   email: String,
   userId: String,
-  role: String
+  role: String,
+  colorScheme: String
 });
 
 const ProjectSchema = new Schema({
   name: String,
   tag: String,
+  colorScheme: String,
   description: String,
   members: [MemberSchema]
 });

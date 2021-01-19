@@ -1,5 +1,7 @@
 import Task from '../models/task';
 
+import { getProjectTag } from './projectService';
+
 /**
  * Find a task by ID.
  *
@@ -25,9 +27,9 @@ export function findTaskById(taskId, callbackSuccess, callbackError) {
  * @param {Function} callbackError
  */
 export function saveTask(taskData, callbackSuccess, callbackError) {
-  const newProject = new Task(taskData);
+  const newTask = new Task(taskData);
 
-  newProject.save().then(result => {
+  newTask.save().then(result => {
     callbackSuccess(result);
   }).catch(error => {
     console.log('ERROR: ', error);
@@ -44,6 +46,23 @@ export function saveTask(taskData, callbackSuccess, callbackError) {
  */
 export function findTasksOfProject(projectId, callbackSuccess, callbackError) {
   Task.find({ projectId }).then(results => {
+    callbackSuccess(results);
+  }).catch(error => {
+    console.log('ERROR: ', error);
+
+    callbackError();
+  });
+}
+
+/**
+ * Find tasks of a project with params.
+ *
+ * @param {Object} params
+ * @param {Function} callbackSuccess
+ * @param {Function} callbackError
+ */
+export function findTasksOfProjectWithParams(params, callbackSuccess, callbackError) {
+  Task.find(params).then(results => {
     callbackSuccess(results);
   }).catch(error => {
     console.log('ERROR: ', error);
@@ -121,4 +140,21 @@ export function updateTaskById(taskId, updateData, callbackSuccess, callbackErro
 
     callbackError();
   });
+}
+
+/**
+ * Update a task by id.
+ *
+ * @param {String} projectId
+ * @param {Function} callbackSuccess
+ * @param {Function} callbackError
+ */
+export function getNextUniqueTaskTag(projectId, callbackSuccess, callbackError) {
+  getProjectTag(projectId, (projectTag => {
+    Task.findOne({ projectId }, {}, { sort: { 'createdDate': -1 } }).then(prevTask => {
+      const taskNum = prevTask && prevTask.taskTag ? +prevTask.taskTag.split('-')[1] : 0;
+
+      callbackSuccess(projectTag + '-' + (taskNum + 1));
+    });
+  }), callbackError);
 }

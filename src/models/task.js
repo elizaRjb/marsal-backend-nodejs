@@ -13,16 +13,18 @@ const CommentSchema = new Schema({
   commentedDate: Date,
   comment: String,
   isEdited: { type: Boolean, default: false }
-})
+});
+
+const AssignedToSchema = new Schema({
+  name: String,
+  email: String,
+  userId: String
+});
 
 const TaskSchema = new Schema({
   taskTag: String,
   name: String,
-  assignedTo: {
-    name: String,
-    email: String,
-    userId: String
-  },
+  assignedTo: AssignedToSchema,
   dueDate: Date,
   createdDate: Date,
   stage: String,

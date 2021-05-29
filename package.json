@@ -4,6 +4,8 @@
   "description": "Backend for Marsal Project Managament tool",
   "main": "index.js",
   "scripts": {
+    "start": "node dist",
+    "build": "rimraf dist && babel src --copy-files --out-dir dist --source-maps",
     "start:dev": "nodemon -r esm src/index.js",
     "eslint": "eslint src",
     "eslint:fix": "eslint --fix src",
@@ -28,12 +30,18 @@
     "nodemon": "^2.0.6"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
     "eslint": "^7.16.0",
     "eslint-config-leapfrog": "^3.0.0",
     "eslint-config-prettier": "^7.1.0",
     "husky": "^4.3.6",
     "lint-staged": "^10.5.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "regenerator-runtime": "^0.13.7"
   },
   "engines": {
     "node": "14.15.x"
